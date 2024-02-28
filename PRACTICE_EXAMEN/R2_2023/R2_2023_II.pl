@@ -1,0 +1,60 @@
+% candidat(L: list, E: element, Rest: list)
+% Extrage un element din L sau verifica daca E este in L.
+% L - lista de elemente
+% E - element extras sau de verificat daca exista in L.
+% Rest - restul listei dupa E.
+% Model de flux: (i, o, o) - nedeterminist, (i, i, o) - determinist,
+% (i, i, i) - determinist.
+
+candidat([H | T], H, T).
+candidat([_ | T], E, Rest) :- candidat(T, E, Rest).
+
+% adaugaSfarsit(L: list, E: element, Rez: list)
+% Adauga elementul E la finalul listei L.
+% L: lista de elemente
+% E: elementul de adaugat.
+% Rez: lista rezultat.
+% Model de flux: (i, i, o), (i, i, i) - deterministe.
+
+adaugaSfarsit([], E, [E]).
+adaugaSfarsit([H | T], E, [H | Rez]) :- adaugaSfarsit(T, E, Rez).
+
+% submultimi(L: list, N: int, SubM: list, K: int, S: int, Rez: list)
+% Genereaza submultimile din L ce respecta conditiile.
+% L - lista de intregi.
+% N - numarul minim de elemente ale fiecarei submultimi.
+% SubM - submultimea curenta.
+% K - numarul de elemente ale submultimii SubM.
+% S - suma elementelor submultimii SubM.
+% Rez - lista rezultat.
+% Model de flux: (i, i, i ,i, i, o) - nedeterminist.
+
+submultimi(_, N, SubM, K, S, SubM) :- K >= N, R is S mod 3, R =:= 0.
+submultimi(L, N, SubM, K, S, Rez) :-
+    candidat(L, E, Rest),
+    KTest is K + 1,
+    STest is S + E,
+    adaugaSfarsit(SubM, E, SubMNew),
+    submultimi(Rest, N, SubMNew, KTest, STest, Rez).
+
+% submultimiWrap(L: list, N: int, Rez: list)
+% Wrapper pentru predicatul submultimi. Extrage un candidat de inceput.
+% L - lista de intregi.
+% N - numarul minim de elemente ale fiecarei submultimi.
+% Rez - lista rezultat.
+% Model de flux: (i, i, o) - nedeterminist.
+
+submultimiWrap(L, N, Rez) :-
+    candidat(L, E, Rest),
+    submultimi(Rest, N, [E], 1, E, Rez).
+
+% submultimiMain(L: list, N: int)
+% Predicat main pentru problema.
+% L - lista intregi.
+% N - numar minim de elemente ale fiecarei submultimi.
+% Model de flux: (i, i) - determinist.
+
+submultimiMain(L, N) :-
+    N > 0,
+    findall(Bag, submultimiWrap(L, N, Bag), Rez),
+    write(Rez).

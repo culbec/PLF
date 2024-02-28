@@ -1,0 +1,17 @@
+(dotProductMain '() '())
+(dotProductMain '(1 2) '(1 2 3))
+(dotProductMain '(1 2) '(1 2))
+
+(maxNumericMain 2)
+(maxNumericMain 'c)
+(maxNumericMain '(1 (1 a 6) 4 3))
+
+(permutari '())
+(permutari '(3))
+(permutari '(1 2 3))
+
+(evenSizeMain '())
+(evenSizeMain 'c)
+(evenSizeMain 1)
+(evenSizeMain '(1 2 3))
+(evenSizeMain '(1 2 3 4))	

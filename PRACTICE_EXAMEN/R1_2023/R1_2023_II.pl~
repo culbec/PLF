@@ -1,0 +1,46 @@
+% candidat(L: list, Elem: int, Rest: list)
+% Extrage un element din L.
+% L: Lista de elemente.
+% E: Elementul extras.
+% Model de flux: (i, o) - nedeterminist, (i, i) - determinist.
+
+candidat([H | _], H).
+candidat([_ | T], E) :- candidat(T, E).
+
+% valid(K: int, P: int, KAranj: int, PAranj: int)
+% Verifica daca aranjamentul are K dat si P dat.
+% K: marimea aranjamentului.
+% P: produsul care trebuie verificat de aranjament.
+% KAranj: marimea aranjamentului curent.
+% PAranj: produsul aranajamentului curent.
+% Model de flux: (i, i, i, i) - determinist.
+
+valid(K, P, KAranj, PAranj) :- PAranj =:= P, K =:= KAranj.
+
+% aranjamente(L: list, K: int, P: int, Col: list, Rez: list)
+% Returneaza aranjamente cu K elemente care au produs P.
+% L: Lista de intregi.
+% K: Marimea aranjamentului.
+% P: Produsul care trebuie respectat de aranjament.
+% Col: Colectoare care va pastra un anumit aranjament valid.
+% Rez: Aranjamentul final.
+
+aranjamente(L, K, P, Col, KCol, PCol, Rez) :-
+    candidat(L, E),
+    \+candidat(Col, E),
+    KColTest is KCol + 1,
+    PColTest is PCol * E,
+    valid(K, P, KColTest, PColTest),
+    aranjamente(L, K, P, [E | Col], KColTest, PColTest, Rez).
+aranjamente(_, K, P, Col, KCol, PCol, Col) :- valid(K, P, KCol, PCol).
+
+aranjamenteMain(L, K, P, Rez) :-
+    candidat(L, E),
+    aranjamente(L, K, P, [E], 1, E, Rez).
+
+aranjamenteCollect(L, K, P) :-
+    findall(R, aranjamenteMain(L, K, P, R), Rez),
+    write(Rez).
+
+
+

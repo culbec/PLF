@@ -1,0 +1,33 @@
+(defun F(L)
+  (cond
+    ((NULL L) nil)
+    ((LISTP L) (funcall #'(lambda(x) (append x (F (cdr L)) (car x))) (F (car L))))
+    (t (list (car L)))
+  )
+)
+
+(defun remove_e (L E)
+  (car (remove_e_aux L E))
+)
+
+(defun remove_e_aux (L E)
+  (cond
+    ((and (atom L) (equal L E)) nil)
+    ((and (atom L) (not (equal L E))) (list L))
+    (t (list (mapcan #'(lambda (x) (remove_e_aux x E)) L)))
+  )
+)
+
+(defun remove_e_1 (L E)
+  (cond
+    ((listp L) (mapcan #'(lambda (x) (remove_e_aux_1 x E)) L))
+    (t nil)
+  )
+)
+
+(defun remove_e_aux_1 (L E)
+  (cond
+    ((and (atom L) (not (equal L E))) (list L))
+    (t (list (mapcan #'(lambda (x) (remove_e_aux_1 x E)) L)))
+  )
+)
